@@ -1,32 +1,41 @@
 ---
 name: sync-obsidian
-description: Automatically sync Claude Code session plans and implementation reports to your Obsidian vault — as Markdown notes + visual Canvas maps.
+description: Automatically sync Claude Code session plans and implementation reports to your Obsidian vault — as Markdown notes + visual Canvas maps. Auto-detects project name.
 argument-hint: "[plan|report] [title]"
 disable-model-invocation: false
 allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 ---
 
-# Sync to Obsidian — Claude Code Session Sync
+# Sync to Obsidian — Auto-Detect Project Sync
 
 Automatically sync your Claude Code session plans and implementation reports to your Obsidian vault.
 
 Every sync produces **two files**: a detailed Markdown note + an Obsidian Canvas visual map.
 
+The project name is **auto-detected** — no per-project configuration needed.
+
 ## Configuration
 
-Before using, set these paths to match your environment:
-
-- **OBSIDIAN_VAULT**: Your Obsidian vault root path (e.g. `/Users/you/Documents/Obsidian Vault`)
-- **PROJECT_DIR**: Subfolder inside the vault for this project (e.g. `MyProject`)
-- **CANVAS_DIR**: Subfolder for Canvas files (e.g. `MyProject/canvas`)
+Only one path to set — your Obsidian vault root:
 
 ```
 OBSIDIAN_VAULT = /Users/you/Documents/Obsidian Vault
-PROJECT_DIR    = MyProject
-CANVAS_DIR     = MyProject/canvas
 ```
 
-> Tip: Update the paths above to your actual Obsidian vault location before first use.
+> Update this to your actual Obsidian vault path before first use.
+
+## Auto Project Detection
+
+The skill automatically detects the current project name (in priority order):
+
+1. **Git repo name**: `basename $(git rev-parse --show-toplevel)`
+2. **Current directory name**: `basename $PWD` (fallback if not in a git repo)
+
+Sync targets are derived from the project name:
+- **Markdown**: `{OBSIDIAN_VAULT}/[Project] {project_name}/`
+- **Canvas**: `{OBSIDIAN_VAULT}/[Project] {project_name}/canvas/`
+
+> Directories are auto-created if they don't exist (`mkdir -p`).
 
 ## Usage
 
@@ -41,6 +50,13 @@ CANVAS_DIR     = MyProject/canvas
 - `$ARGUMENTS[1]`: Custom title (optional — auto-inferred from content if omitted)
 
 ## Execution Flow
+
+### Step 0: Detect Project
+
+1. Run `basename $(git rev-parse --show-toplevel 2>/dev/null) 2>/dev/null || basename $PWD` to get project name
+2. Set `PROJECT_DIR = [Project] {project_name}`
+3. Set `CANVAS_DIR = [Project] {project_name}/canvas`
+4. Run `mkdir -p` to ensure both directories exist
 
 ### When type = `plan`
 
@@ -69,6 +85,7 @@ CANVAS_DIR     = MyProject/canvas
 
 > Date: {YYYY-MM-DD}
 > Source: Claude Code Session
+> Project: {project_name}
 > Status: Pending / Approved
 
 ---
@@ -87,6 +104,7 @@ CANVAS_DIR     = MyProject/canvas
 
 > Completed: {YYYY-MM-DD}
 > Source: Claude Code Session
+> Project: {project_name}
 
 ---
 
@@ -158,11 +176,12 @@ Canvas is a JSON format with `nodes` (cards/groups) and `edges` (connections).
 ## Important Rules
 
 1. **No YAML frontmatter** — use `>` quote blocks for metadata instead
-2. **Quote blocks for metadata** — date, source, status in `>` blocks
+2. **Quote blocks for metadata** — date, source, status, project in `>` blocks
 3. **Preserve original plan content** — never trim or rewrite technical details
 4. **Reports must be specific** — list actual file paths, code patterns, design rationale
 5. **Always output both files** — Markdown + Canvas on every sync
 6. **Report full paths** — tell the user where both files were written
+7. **Auto-create directories** — use `mkdir -p` if project or canvas dir doesn't exist
 
 ## Auto-Sync Setup (Optional)
 

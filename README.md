@@ -6,6 +6,7 @@
   <img src="https://img.shields.io/badge/Claude_Code-Skill-blueviolet?style=for-the-badge&logo=anthropic" alt="Claude Code Skill">
   <img src="https://img.shields.io/badge/Obsidian-Vault_Sync-7C3AED?style=for-the-badge&logo=obsidian" alt="Obsidian">
   <img src="https://img.shields.io/badge/Output-Markdown_+_Canvas-blue?style=for-the-badge" alt="Dual Output">
+  <img src="https://img.shields.io/badge/Projects-Auto_Detect-green?style=for-the-badge" alt="Auto Detect">
 </p>
 
 ---
@@ -16,7 +17,7 @@ You use Claude Code to plan features, fix bugs, and build systems. But when the 
 
 ## The Solution
 
-**One command. Two outputs. Zero friction.**
+**One command. Two outputs. Zero config per project.**
 
 ```
 /sync-obsidian report
@@ -29,7 +30,7 @@ This produces:
 | **Markdown Note** | `.md` | Structured report with summary, file changes, design decisions, TODOs |
 | **Visual Canvas** | `.canvas` | Interactive node graph with color-coded groups and connected flow |
 
-Both files land in your Obsidian vault, instantly searchable and linkable.
+Both files land in your Obsidian vault under `[Project] {auto-detected-name}/`, instantly searchable and linkable.
 
 ---
 
@@ -42,24 +43,53 @@ Both files land in your Obsidian vault, instantly searchable and linkable.
 git clone https://github.com/ChatRichAi/claude_sync_obsidian.git ~/.claude/skills/sync-obsidian
 ```
 
-### 2. Configure Your Paths
+### 2. Set Your Vault Path
 
-Edit `~/.claude/skills/sync-obsidian/SKILL.md` and update the Configuration section:
+Edit `~/.claude/skills/sync-obsidian/SKILL.md` — update **one line**:
 
 ```
 OBSIDIAN_VAULT = /Users/you/Documents/Obsidian Vault
-PROJECT_DIR    = MyProject
-CANVAS_DIR     = MyProject/canvas
 ```
+
+That's it. The project name is auto-detected from your git repo or directory name.
 
 ### 3. Use It
 
 ```bash
-# In any Claude Code session:
+# In any Claude Code session, in any project:
 /sync-obsidian report                # Sync a work report
 /sync-obsidian plan                  # Sync the latest plan
 /sync-obsidian report Auth Refactor  # With a custom title
 ```
+
+---
+
+## Auto Project Detection
+
+No per-project configuration needed. The skill detects your project name automatically:
+
+| Priority | Method | Example |
+|----------|--------|---------|
+| 1st | Git repo name | `my-app/` → `[Project] my-app/` |
+| 2nd | Directory name | `~/code/my-app/` → `[Project] my-app/` |
+
+Your vault organizes itself:
+
+```
+Obsidian Vault/
+├── [Project] my-app/
+│   ├── [Report] Auth Refactor (2026-03-02).md
+│   ├── [Plan] Database Migration (2026-03-02).md
+│   └── canvas/
+│       ├── [Report] Auth Refactor (2026-03-02).canvas
+│       └── [Plan] Database Migration (2026-03-02).canvas
+├── [Project] my-api/
+│   ├── [Report] Rate Limiting (2026-03-01).md
+│   └── canvas/
+│       └── ...
+```
+
+Directories are auto-created when needed.
 
 ---
 
@@ -145,6 +175,7 @@ Every productive Claude Code session automatically becomes a searchable Obsidian
 | Design decisions lost to scrollback | Explicit decision log with rationale |
 | Manual note-taking breaks flow | Zero-friction, auto or one-command |
 | Text-only records | Visual Canvas maps for spatial thinkers |
+| Config per project | Auto-detect, works everywhere |
 
 ---
 
@@ -152,7 +183,7 @@ Every productive Claude Code session automatically becomes a searchable Obsidian
 
 ### Naming Convention
 
-The default naming uses bracket labels: `[Plan]`, `[Report]`. You can customize these in `SKILL.md` to match your vault's conventions (e.g., Chinese brackets `「Plan」`, emoji prefixes, etc.).
+The default naming uses bracket labels: `[Plan]`, `[Report]`, `[Project]`. You can customize these in `SKILL.md` to match your vault's conventions (e.g., Chinese brackets `「Plan」`, emoji prefixes, etc.).
 
 ### Canvas Layout
 
