@@ -136,7 +136,13 @@ canvas/[Report] Auth Refactor (2026-03-02).canvas
 
 ## Auto-Sync (Set and Forget)
 
-Add this to your project's `CLAUDE.md` and never think about syncing again:
+Add auto-sync rules to `CLAUDE.md` and never think about syncing again.
+
+**Option A: Global (all projects)** — add to `~/.claude/CLAUDE.md`:
+
+**Option B: Per-project** — add to your project's `CLAUDE.md`:
+
+Either way, paste this:
 
 ```markdown
 ## Auto Sync to Obsidian
