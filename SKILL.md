@@ -166,20 +166,34 @@ Canvas is a JSON format with `nodes` (cards/groups) and `edges` (connections).
 
 ## Auto-Sync Setup (Optional)
 
-Add this to your project's `CLAUDE.md` to auto-sync after every substantive session:
+Add this to your project's `CLAUDE.md` to enable the full sync lifecycle:
 
 ```markdown
 ## Auto Sync to Obsidian
 
-After completing substantive work (code changes, architecture design, bug fixes, etc.),
-automatically call `/sync-obsidian report` before the session ends.
+### Plan Sync (Before Implementation)
+
+When a plan/design discussion is complete and about to move into implementation,
+call `/sync-obsidian plan` FIRST — so the user can review it in Obsidian before
+giving the green light.
+
+Trigger when:
+- A plan or design discussion has been finalized
+- User indicates approval intent ("looks good", "let's do it")
+- Before starting any implementation work
+
+Flow: Discuss → Sync plan → User reviews in Obsidian → Confirmed → Implement
+
+### Report Sync (After Implementation)
+
+After completing substantive work, call `/sync-obsidian report` before the session ends.
 
 Trigger when:
 - Code files were created, edited, or deleted
 - A plan was implemented
 - Important architecture discussions or decisions were made
 
-Do NOT trigger when:
+### Do NOT trigger when:
 - Pure Q&A / casual chat
 - Only read files, no modifications
 - User explicitly says no sync needed

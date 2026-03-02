@@ -111,21 +111,28 @@ Add this to your project's `CLAUDE.md` and never think about syncing again:
 ```markdown
 ## Auto Sync to Obsidian
 
-After completing substantive work (code changes, architecture design, bug fixes),
-automatically call `/sync-obsidian report` before the session ends.
+### Plan Sync (Before Implementation)
 
-Trigger when:
-- Code files were created, edited, or deleted
-- A plan was implemented
-- Important architecture discussions or decisions were made
+When a plan discussion is complete, call `/sync-obsidian plan` FIRST
+so you can review it in Obsidian before giving the green light.
 
-Do NOT trigger when:
+Trigger: plan finalized, user shows approval intent, before implementation starts.
+
+### Report Sync (After Implementation)
+
+After completing substantive work, call `/sync-obsidian report` before the session ends.
+
+Trigger: code files changed, plan implemented, important decisions made.
+
+### Do NOT trigger when:
 - Pure Q&A / casual chat
 - Only read files, no modifications
 - User explicitly says no sync needed
 ```
 
-Now every productive Claude Code session automatically becomes a searchable Obsidian note.
+The full lifecycle: **Discuss → Sync plan → Review in Obsidian → Approve → Implement → Sync report**
+
+Every productive Claude Code session automatically becomes a searchable Obsidian note.
 
 ---
 
